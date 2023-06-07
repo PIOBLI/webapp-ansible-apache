@@ -11,12 +11,19 @@
 
   pre_tasks:
 
-    - name: Install EPEL repo
+    - name: Install some package
 
-      package: name=epel-release state=present
+      package: name='{{ item }}' state=present
 
       when: ansible_distribution == "CentOS"
+      
+      loop:
 
+        - epel-release
+ 
+        - wget
+
+        - git
 
 
     - name: download pip script
@@ -28,12 +35,10 @@
         dest: /tmp/get-pip.py
 
 
-
     - name: install python-pip
 
       command: python2.7 /tmp/get-pip.py
       changed_when: false
-
 
 
     - name: Install docker python
@@ -41,8 +46,16 @@
       pip: name=docker-py
 
 
-
   tasks:
+
+    - name: copy website file template
+
+      template:
+
+        src: index.html.j2
+       
+        dest: /home/admin/index.html
+
 
     - name: Create Apache container
 
@@ -55,3 +68,9 @@
         ports:
 
           - "80:80"
+
+        volumes:
+
+          - /home/admin/index.html:/usr/local/apache2/htdocs/index.html
+
+
