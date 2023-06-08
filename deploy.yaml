@@ -5,6 +5,10 @@
 
   become: true
 
+  vars_files:
+
+    - files/secrets/credentials.yml
+
   vars:
 
     ansible_sudo_pass: admin
@@ -72,5 +76,3 @@
         volumes:
 
           - /home/admin/index.html:/usr/local/apache2/htdocs/index.html
-
-
